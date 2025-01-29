@@ -121,7 +121,7 @@ class Enemy {
 
         this.y += this.speed;
         if (this.y > height) {
-            this.y = -50;
+            this.y = -20;
             this.x = random(width - this.size);
             score++;
         }
