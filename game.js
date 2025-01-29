@@ -1,5 +1,5 @@
 let player, enemies = [];
-let score = 0, highScore = 0, gameOver = false;
+let score = 0, highScore = 0, gameOver = false, gameStarted = false;
 
 // Load high score from localStorage
 if (localStorage.getItem("highScore")) {
@@ -16,8 +16,11 @@ function setup() {
 
 function draw() {
     background(0);
-    
-    drawScore();
+
+    if (!gameStarted) {
+        drawStartScreen();
+        return;
+    }
 
     if (gameOver) {
         drawGameOver();
@@ -36,10 +39,41 @@ function draw() {
                 }
             }
         }
+
+        drawScore();
     }
 }
 
+// === START SCREEN FUNCTION ===
+function drawStartScreen() {
+    fill(255);
+    textSize(32);
+    textAlign(CENTER, CENTER);
+    text("FALLER", width / 2, height / 3);
+    
+    textSize(20);
+    text("Press any key or mouse button to start", width / 2, height / 2);
+    text("Click or press any key to move", width / 2, height / 2 + 40);
+}
+
+// === EVENT LISTENERS TO START THE GAME ===
 function mousePressed() {
+    if (!gameStarted) {
+        gameStarted = true;
+        return;
+    }
+    if (gameOver) {
+        resetGame();
+    } else {
+        player.flipDirection();
+    }
+}
+
+function keyPressed() {
+    if (!gameStarted) {
+        gameStarted = true;
+        return;
+    }
     if (gameOver) {
         resetGame();
     } else {
@@ -78,13 +112,16 @@ class Enemy {
         this.x = random(width - 50);
         this.y = random(-500, -50);
         this.size = 50;
-        this.speed = 20;
+        this.speed = 5; // Start at 5
     }
 
     update() {
+        // Increase speed gradually based on score
+        this.speed = 5 + min(score / 10, 15); // Caps at 20 max speed
+
         this.y += this.speed;
         if (this.y > height) {
-            this.y = -20;
+            this.y = -50;
             this.x = random(width - this.size);
             score++;
         }
@@ -106,7 +143,7 @@ class Enemy {
 // === SCORE & GAME OVER ===
 function drawScore() {
     fill(255);
-    textSize(96);
+    textSize(48);
     textAlign(CENTER, CENTER);
     text(score, width / 2, 240); // Score in center
 
@@ -121,7 +158,7 @@ function drawGameOver() {
     textAlign(CENTER, CENTER);
     text("GAME OVER", width / 2, height / 2);
     textSize(24);
-    text("Click to Restart", width / 2, height / 2 + 50);
+    text("Click or press any key to restart", width / 2, height / 2 + 50);
 }
 
 function resetGame() {
