@@ -16,11 +16,13 @@ function setup() {
 
 function draw() {
     background(0);
-
+    
     if (!gameStarted) {
         drawStartScreen();
         return;
     }
+    
+    drawScore();
 
     if (gameOver) {
         drawGameOver();
@@ -39,8 +41,6 @@ function draw() {
                 }
             }
         }
-
-        drawScore();
     }
 }
 
@@ -143,7 +143,7 @@ class Enemy {
 // === SCORE & GAME OVER ===
 function drawScore() {
     fill(255);
-    textSize(48);
+    textSize(96);
     textAlign(CENTER, CENTER);
     text(score, width / 2, 240); // Score in center
 
